@@ -1,0 +1,424 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: #091923;
+}
+
+body {
+  margin: 0;
+  padding: 12px;
+  background: #091923;
+  color: #ffffff;
+  font: 16px/1.5 Arial, sans-serif;
+}
+
+button,
+select {
+  padding: 10px 16px;
+  border: 2px solid #70dfcf;
+  border-radius: 8px;
+  background: #70dfcf;
+  color: #152b35;
+  font: inherit;
+  font-weight: bold;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:hover:not(:disabled) {
+  background: #a2eee3;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+:is(button, select):focus-visible {
+  outline: 3px solid white;
+  outline-offset: 4px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.game {
+  width: 100%;
+  max-width: 1400px;
+  min-height: calc(100vh - 24px);
+  margin: 0 auto;
+  padding: 20px;
+  border: 2px solid #70dfcf;
+  border-radius: 18px;
+  background: #152b35;
+  box-shadow: 0 0 20px #70dfcf40;
+}
+
+h1,
+h2,
+strong {
+  color: #70dfcf;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.setup {
+  max-width: 850px;
+  margin: 30px auto;
+  padding: 24px;
+  border: 1px solid #70dfcf;
+  border-radius: 12px;
+  background: #ffffff0d;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.settings label {
+  font-weight: bold;
+}
+
+.progress {
+  min-height: 28px;
+  margin: 0;
+  color: #c3d3d8;
+}
+
+/* Consistent question height keeps the board steady. */
+.question {
+  display: flex;
+  align-items: center;
+  height: 104px;
+  overflow-y: auto;
+  margin: 12px 0;
+  padding: 14px 18px;
+  border-left: 4px solid #70dfcf;
+  background: #ffffff0d;
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: bold;
+}
+
+.flight-area {
+  position: relative;
+  height: clamp(260px, 48vh, 580px);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #70dfcf88;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #091923, #142e40);
+}
+
+.lane {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 33.333%;
+  border-bottom: 1px dashed #70dfcf33;
+  pointer-events: none;
+}
+
+.lane:nth-child(1) {
+  top: 0;
+}
+
+.lane:nth-child(2) {
+  top: 33.333%;
+}
+
+.lane:nth-child(3) {
+  top: 66.666%;
+  border: 0;
+}
+
+/* Moving stars */
+.flight-area::before,
+.flight-area::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.flight-area::before {
+  background-image:
+    radial-gradient(
+      circle at 30px 35px,
+      #ffffff88 1px,
+      transparent 1.8px
+    ),
+    radial-gradient(
+      circle at 120px 100px,
+      #70dfcf88 1px,
+      transparent 1.8px
+    );
+
+  background-size: 200px 160px;
+  animation: distant-stars 14s linear infinite;
+}
+
+.flight-area::after {
+  background-image:
+    radial-gradient(
+      circle at 60px 70px,
+      #ffffffcc 1.5px,
+      transparent 2.5px
+    ),
+    radial-gradient(
+      circle at 180px 180px,
+      #70dfcfaa 1.5px,
+      transparent 2.5px
+    );
+
+  background-size: 280px 230px;
+  animation: nearby-stars 6s linear infinite;
+}
+
+@keyframes distant-stars {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -200px 0;
+  }
+}
+
+@keyframes nearby-stars {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -280px 0;
+  }
+}
+
+/* Spacecraft */
+.ship {
+  --bank: 0deg;
+
+  position: absolute;
+  left: 12%;
+  top: 50%;
+  width: 54px;
+  height: 32px;
+  border: 2px solid #e6fffa;
+  border-radius: 45% 65% 65% 45%;
+  background: linear-gradient(#effffc, #70dfcf);
+  box-shadow: 0 0 18px #70dfcf88;
+  transform: translate(-50%, -50%) rotate(var(--bank));
+
+  transition:
+    top 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s ease;
+
+  z-index: 2;
+}
+
+.ship::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 7px;
+  width: 18px;
+  height: 14px;
+  border-radius: 70% 0 0 70%;
+  background: linear-gradient(90deg, transparent, #ffca70);
+  transform-origin: right center;
+  animation: engine-flicker 0.18s ease-in-out infinite alternate;
+}
+
+.ship::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #152b35;
+}
+
+@keyframes engine-flicker {
+  from {
+    transform: scaleX(0.8) scaleY(0.9);
+    opacity: 0.75;
+  }
+
+  to {
+    transform: scaleX(1.25) scaleY(1.1);
+    opacity: 1;
+  }
+}
+
+.target {
+  position: absolute;
+  width: 32%;
+  max-width: 280px;
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 2px solid #70dfcf;
+  border-radius: 14px;
+  background: #203b46;
+  color: white;
+  text-align: center;
+  font-size: clamp(14px, 1.5vw, 17px);
+  transform: translateY(-50%);
+  box-shadow: 0 0 14px #70dfcf33;
+  z-index: 1;
+}
+
+.is-still::before,
+.is-still::after,
+.is-still .ship::before {
+  animation-play-state: paused;
+}
+
+.selection {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  margin: 0;
+  overflow-y: auto;
+  color: #70dfcf;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 52px;
+}
+
+.secondary {
+  background: transparent;
+  color: #70dfcf;
+}
+
+.secondary:hover:not(:disabled) {
+  color: #152b35;
+}
+
+.answer-options {
+  display: grid;
+  gap: 16px;
+  align-content: center;
+  min-height: clamp(260px, 48vh, 580px);
+}
+
+.answer-options button {
+  min-height: 68px;
+  text-align: left;
+}
+
+.result {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 28px;
+  border: 1px solid #70dfcf;
+  border-radius: 12px;
+  background: #ffffff0d;
+  text-align: center;
+}
+
+.result-score {
+  font-size: 2em;
+  font-weight: bold;
+  color: #70dfcf;
+}
+
+.small-note {
+  margin: 16px 0 0;
+  font-size: 0.8em;
+  color: #c3d3d8;
+}
+
+/* Fullscreen */
+.game:fullscreen {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+  overflow-y: auto;
+  border: 0;
+  border-radius: 0;
+  background: #152b35;
+}
+
+.game::backdrop {
+  background: #091923;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 6px;
+  }
+
+  .game {
+    padding: 14px;
+    min-height: calc(100vh - 12px);
+  }
+
+  .setup {
+    padding: 18px;
+  }
+
+  .target {
+    width: 44%;
+    padding: 8px;
+  }
+
+  .ship {
+    width: 42px;
+  }
+
+  .question {
+    height: 112px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ship {
+    transition: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .flight-area::before,
+  .flight-area::after,
+  .ship::before {
+    animation: none;
+  }
+}
