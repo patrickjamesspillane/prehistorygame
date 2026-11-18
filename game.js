@@ -212,39 +212,49 @@
     updateLane(true);
   }
 
-  function prepareAnswers() {
-    displayedAnswers = shuffle(
-      questions[index].answers.map(function (text, originalIndex) {
-        return { text, originalIndex };
-      })
+function prepareAnswers() {
+  displayedAnswers = shuffle(
+    questions[index].answers.map(function (text, originalIndex) {
+      return { text, originalIndex };
+    })
+  );
+
+  const arrivalOrder = shuffle([0, 1, 2]);
+
+  flyingAnswers = displayedAnswers.map(function (answer, number) {
+    return {
+      originalIndex: answer.originalIndex,
+      startX: 100 + arrivalOrder[number] * 26,
+      passed: false
+    };
+  });
+
+  targets.forEach(function (target, number) {
+    target.textContent = displayedAnswers[number].text;
+    target.style.opacity = "1";
+    target.style.left = "0px";
+    target.style.top = ((number + 0.5) * 100 / 3) + "%";
+  });
+
+  positionTargets();
+}
+
+ function positionTargets() {
+  const distance = (elapsed / duration) * 88;
+  const boardWidth = flight.clientWidth;
+
+  flyingAnswers.forEach(function (answer, number) {
+    const percentage = answer.startX - distance;
+
+    // Whole CSS pixels reduce fractional-position shimmer.
+    const x = Math.round(
+      boardWidth * percentage / 100
     );
 
-    const arrivalOrder = shuffle([0, 1, 2]);
-
-    flyingAnswers = displayedAnswers.map(function (answer, number) {
-      return {
-        originalIndex: answer.originalIndex,
-        startX: 100 + arrivalOrder[number] * 26,
-        passed: false
-      };
-    });
-
-    targets.forEach(function (target, number) {
-      target.textContent = displayedAnswers[number].text;
-      target.style.opacity = "1";
-      target.style.left = flyingAnswers[number].startX + "%";
-      target.style.top = ((number + 0.5) * 100 / 3) + "%";
-    });
-  }
-
-  function positionTargets() {
-    const distance = (elapsed / duration) * 88;
-
-    flyingAnswers.forEach(function (answer, number) {
-      targets[number].style.left =
-        (answer.startX - distance) + "%";
-    });
-  }
+    targets[number].style.transform =
+      "translate3d(" + x + "px, -50%, 0)";
+  });
+}
 
   function checkCrossings() {
     const distance = (elapsed / duration) * 88;
