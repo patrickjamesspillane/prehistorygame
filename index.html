@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Viaje entre épocas</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+
+<body>
+  <main id="game" class="game">
+    <header class="header">
+      <h1>Viaje entre épocas</h1>
+
+      <button id="fullscreen" class="secondary" type="button">
+        ⛶ Pantalla completa
+      </button>
+    </header>
+
+    <p id="fullscreen-note" role="status" hidden></p>
+
+    <section id="setup" class="setup">
+      <h2>¡Preparaos para despegar!</h2>
+
+      <p>
+        Pilotad vuestra nave y poned a prueba lo que sabéis
+        sobre la vida en el Neolítico.
+      </p>
+
+      <p>
+        <strong>Cómo jugar:</strong>
+        utilizad las flechas ↑ y ↓ del teclado o los botones
+        para cambiar de carril.
+      </p>
+
+      <p>
+        Las respuestas llegan en momentos diferentes.
+        Colocaos en el carril de vuestra respuesta cuando
+        alcance la nave. La primera que recojáis será
+        vuestra elección.
+      </p>
+
+      <p>
+        <strong>¡Cada respuesta correcta suma 10 puntos!</strong>
+        Si todas pasan de largo, seguiréis sin sumar puntos.
+      </p>
+
+      <p>
+        También podéis responder sin movimiento
+        y sin límite de tiempo.
+      </p>
+
+      <div class="settings">
+        <label for="mode">Modo:</label>
+        <select id="mode">
+          <option value="flight">Pilotamos la nave</option>
+          <option value="calm">Sin movimiento</option>
+        </select>
+
+        <label for="speed">Velocidad:</label>
+        <select id="speed">
+          <option value="16">Tranquila</option>
+          <option value="11">Normal</option>
+        </select>
+      </div>
+
+      <button id="start" type="button">¡Despegar!</button>
+    </section>
+
+    <section id="play" aria-label="Partida" hidden>
+      <p id="progress" class="progress"></p>
+      <div id="question" class="question"></div>
+
+      <div
+        id="flight"
+        class="flight-area is-still"
+        role="img"
+        aria-label="Tres carriles de vuelo con respuestas."
+      >
+        <div class="lane"></div>
+        <div class="lane"></div>
+        <div class="lane"></div>
+
+        <div id="ship" class="ship" aria-hidden="true"></div>
+
+        <div class="target" aria-hidden="true"></div>
+        <div class="target" aria-hidden="true"></div>
+        <div class="target" aria-hidden="true"></div>
+      </div>
+
+      <div
+        id="options"
+        class="answer-options"
+        role="group"
+        aria-label="Opciones de respuesta"
+        hidden
+      ></div>
+
+      <p
+        id="selection"
+        class="selection"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+      <div class="controls">
+        <button id="up" type="button">↑ Subir</button>
+        <button id="down" type="button">↓ Bajar</button>
+        <button id="pause" type="button">Pausar</button>
+
+        <button id="menu" class="secondary" type="button">
+          Volver al inicio
+        </button>
+      </div>
+    </section>
+
+    <section
+      id="result"
+      class="result"
+      aria-label="Resultado"
+      hidden
+    >
+      <h2>¡Viaje completado!</h2>
+
+      <p id="result-score" class="result-score"></p>
+
+      <p>
+        Cada respuesta correcta suma 10 puntos.
+        ¡Podéis volver a jugar e intentar mejorar
+        vuestro resultado!
+      </p>
+
+      <button id="restart" type="button">
+        Volver a jugar
+      </button>
+    </section>
+
+    <p class="small-note">
+      Prototipo de práctica. Los resultados no se envían ni se guardan.
+    </p>
+  </main>
+</body>
+</html>
